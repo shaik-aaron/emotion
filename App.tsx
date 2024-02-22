@@ -7,6 +7,8 @@ import {Image} from 'react-native';
 import Reports from './screens/Reports';
 import Profile from './screens/Profile';
 import {EmotionSelector} from './screens/form/EmotionSelector';
+import {Provider} from 'react-redux';
+import store from './store/store';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -54,12 +56,14 @@ const HomeTabs: FC = () => {
 
 const App: FC = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="HomeTabs" component={HomeTabs} />
-        <Stack.Screen name="EmotionSelector" component={EmotionSelector} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="HomeTabs" component={HomeTabs} />
+          <Stack.Screen name="EmotionSelector" component={EmotionSelector} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 

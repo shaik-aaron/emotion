@@ -1,11 +1,29 @@
-import {FC} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 
 const Home: FC = ({navigation}: any) => {
+  const [time, setTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer: NodeJS.Timeout = setInterval(() => {
+      setTime(new Date());
+    }, 1000 * 60 * 60);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Text style={styles.greeting}>good morning</Text>
+        <Text style={styles.greeting}>
+          good
+          {time.getHours() < 12
+            ? ' morning'
+            : time.getHours() < 16
+            ? ' afternoon'
+            : ' evening'}
+        </Text>
         <Text style={styles.subHeading}>stay on top of your emotions and</Text>
         <Text style={styles.subHeading}>log them through your day</Text>
         <View style={styles.checkInContainer}>
