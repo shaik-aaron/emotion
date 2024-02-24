@@ -3,10 +3,19 @@ import {FC, useEffect} from 'react';
 import {Button, Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {feelingType} from '../../store/emotionSlice';
+import Animated, {SharedTransition, withSpring} from 'react-native-reanimated';
 
-export const EmotionSelector: FC = () => {
+export const EmotionSelector: FC = ({navigation}: any) => {
   const emotion = useSelector((state: any) => state.emotion.emotion);
   const dispatch = useDispatch();
+
+  const customTransition = SharedTransition.custom(values => {
+    'worklet';
+    return {
+      originX: withSpring(values.targetOriginX),
+      originY: withSpring(values.targetOriginY),
+    };
+  });
 
   useEffect(() => {
     return () => {
@@ -28,7 +37,10 @@ export const EmotionSelector: FC = () => {
       <Text style={styles.howDoYouFeel}>how do you feel?</Text>
       <View style={styles.lottieContainer}>
         {emotion.feeling === 'down' ? (
-          <View style={styles.lottieBox}>
+          <Animated.View
+            sharedTransitionStyle={customTransition}
+            sharedTransitionTag="hi"
+            style={styles.lottieBox}>
             <LottieView
               source={require('../../assets/lotties/down-selected-new.json')}
               autoPlay
@@ -36,7 +48,7 @@ export const EmotionSelector: FC = () => {
               style={{width: 48, height: 48}}
             />
             <Text style={styles.down}>down</Text>
-          </View>
+          </Animated.View>
         ) : (
           <Pressable
             onPress={() => dispatch(feelingType('down') as any)}
@@ -51,7 +63,10 @@ export const EmotionSelector: FC = () => {
           </Pressable>
         )}
         {emotion.feeling === 'low' ? (
-          <View style={styles.lottieBox}>
+          <Animated.View
+            sharedTransitionStyle={customTransition}
+            sharedTransitionTag="hi"
+            style={styles.lottieBox}>
             <LottieView
               source={require('../../assets/lotties/low-selected-new.json')}
               autoPlay
@@ -59,7 +74,7 @@ export const EmotionSelector: FC = () => {
               style={{width: 48, height: 48}}
             />
             <Text style={styles.low}>low</Text>
-          </View>
+          </Animated.View>
         ) : (
           <Pressable
             onPress={() => dispatch(feelingType('low') as any)}
@@ -74,7 +89,10 @@ export const EmotionSelector: FC = () => {
           </Pressable>
         )}
         {emotion.feeling === 'neutral' ? (
-          <View style={styles.lottieBox}>
+          <Animated.View
+            sharedTransitionStyle={customTransition}
+            sharedTransitionTag="hi"
+            style={styles.lottieBox}>
             <LottieView
               source={require('../../assets/lotties/neutral-selected-new.json')}
               autoPlay
@@ -82,7 +100,7 @@ export const EmotionSelector: FC = () => {
               style={{width: 48, height: 48}}
             />
             <Text style={styles.fine}>neutral</Text>
-          </View>
+          </Animated.View>
         ) : (
           <Pressable
             onPress={() => dispatch(feelingType('neutral') as any)}
@@ -97,7 +115,10 @@ export const EmotionSelector: FC = () => {
           </Pressable>
         )}
         {emotion.feeling === 'fine' ? (
-          <View style={styles.lottieBox}>
+          <Animated.View
+            sharedTransitionStyle={customTransition}
+            sharedTransitionTag="hi"
+            style={styles.lottieBox}>
             <LottieView
               source={require('../../assets/lotties/fine-selected-new.json')}
               autoPlay
@@ -105,7 +126,7 @@ export const EmotionSelector: FC = () => {
               style={{width: 48, height: 48}}
             />
             <Text style={styles.fine}>fine</Text>
-          </View>
+          </Animated.View>
         ) : (
           <Pressable
             onPress={() => dispatch(feelingType('fine') as any)}
@@ -120,7 +141,10 @@ export const EmotionSelector: FC = () => {
           </Pressable>
         )}
         {emotion.feeling === 'good' ? (
-          <View style={styles.lottieBox}>
+          <Animated.View
+            sharedTransitionStyle={customTransition}
+            sharedTransitionTag="hi"
+            style={styles.lottieBox}>
             <LottieView
               source={require('../../assets/lotties/good-selected-new.json')}
               autoPlay
@@ -128,7 +152,7 @@ export const EmotionSelector: FC = () => {
               style={{width: 48, height: 48}}
             />
             <Text style={styles.good}>good</Text>
-          </View>
+          </Animated.View>
         ) : (
           <Pressable
             onPress={() => dispatch(feelingType('good') as any)}
@@ -144,7 +168,9 @@ export const EmotionSelector: FC = () => {
         )}
       </View>
       {emotion.feeling !== '' && (
-        <Pressable style={styles.next}>
+        <Pressable
+          onPress={() => navigation.navigate('DescribeSelector')}
+          style={styles.next}>
           <Text style={styles.nextText}>next</Text>
         </Pressable>
       )}
