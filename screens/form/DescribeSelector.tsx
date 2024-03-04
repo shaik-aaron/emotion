@@ -1,8 +1,17 @@
 import LottieView from 'lottie-react-native';
 import {FC} from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Animated, {SharedTransition, withSpring} from 'react-native-reanimated';
 import {useSelector} from 'react-redux';
+import Descriptions from '../../components/Descriptions';
+import {feelingEmotions} from '../../constants/feelingEmotions';
 
 const DescribeSelector: FC = () => {
   const customTransition: SharedTransition = SharedTransition.custom(values => {
@@ -24,7 +33,7 @@ const DescribeSelector: FC = () => {
   const emotion: any = useSelector((state: any) => state.emotion.emotion);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.backButtonsContainer}>
         <Pressable>
           <Image source={require('../../assets/back.png')} />
@@ -49,7 +58,12 @@ const DescribeSelector: FC = () => {
         />
         <Text style={styles[emotion.feeling]}>{emotion.feeling}</Text>
       </Animated.View>
-    </View>
+      <View style={styles.containerDescriptions}>
+        {feelingEmotions[emotion.feeling].map((feeling: string, i: number) => {
+          return <Descriptions key={i} feeling={feeling} />;
+        })}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -99,7 +113,7 @@ const styles: any = StyleSheet.create({
   neutral: {
     fontFamily: 'Mulish-Regular',
     fontSize: 12,
-    color: '#8EF09E',
+    color: 'white',
     marginTop: 8,
   },
   fine: {
@@ -113,6 +127,25 @@ const styles: any = StyleSheet.create({
     fontSize: 12,
     color: '#4BE95A',
     marginTop: 8,
+  },
+  containerDescriptions: {
+    marginTop: 50,
+    marginBottom: 56,
+    flex: 3,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 18,
+  },
+  downContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 1000,
+    borderColor: '#DF4545',
+    borderWidth: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

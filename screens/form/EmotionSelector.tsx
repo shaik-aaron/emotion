@@ -4,6 +4,7 @@ import {Button, Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {feelingType} from '../../store/emotionSlice';
 import Animated, {SharedTransition, withSpring} from 'react-native-reanimated';
+import {emotions} from '../../constants/emotions';
 
 export const EmotionSelector: FC = ({navigation}: any) => {
   const emotion = useSelector((state: any) => state.emotion.emotion);
@@ -36,136 +37,44 @@ export const EmotionSelector: FC = ({navigation}: any) => {
       <Text style={styles.step}>1/4</Text>
       <Text style={styles.howDoYouFeel}>how do you feel?</Text>
       <View style={styles.lottieContainer}>
-        {emotion.feeling === 'down' ? (
-          <Animated.View
-            sharedTransitionStyle={customTransition}
-            sharedTransitionTag="hi"
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/down-selected-new.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.down}>down</Text>
-          </Animated.View>
-        ) : (
-          <Pressable
-            onPress={() => dispatch(feelingType('down') as any)}
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/down.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.feeling}>down</Text>
-          </Pressable>
-        )}
-        {emotion.feeling === 'low' ? (
-          <Animated.View
-            sharedTransitionStyle={customTransition}
-            sharedTransitionTag="hi"
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/low-selected-new.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.low}>low</Text>
-          </Animated.View>
-        ) : (
-          <Pressable
-            onPress={() => dispatch(feelingType('low') as any)}
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/low.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.feeling}>low</Text>
-          </Pressable>
-        )}
-        {emotion.feeling === 'neutral' ? (
-          <Animated.View
-            sharedTransitionStyle={customTransition}
-            sharedTransitionTag="hi"
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/neutral-selected-new.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.fine}>neutral</Text>
-          </Animated.View>
-        ) : (
-          <Pressable
-            onPress={() => dispatch(feelingType('neutral') as any)}
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/neutral.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.feeling}>neutral</Text>
-          </Pressable>
-        )}
-        {emotion.feeling === 'fine' ? (
-          <Animated.View
-            sharedTransitionStyle={customTransition}
-            sharedTransitionTag="hi"
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/fine-selected-new.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.fine}>fine</Text>
-          </Animated.View>
-        ) : (
-          <Pressable
-            onPress={() => dispatch(feelingType('fine') as any)}
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/fine.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.feeling}>fine</Text>
-          </Pressable>
-        )}
-        {emotion.feeling === 'good' ? (
-          <Animated.View
-            sharedTransitionStyle={customTransition}
-            sharedTransitionTag="hi"
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/good-selected-new.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.good}>good</Text>
-          </Animated.View>
-        ) : (
-          <Pressable
-            onPress={() => dispatch(feelingType('good') as any)}
-            style={styles.lottieBox}>
-            <LottieView
-              source={require('../../assets/lotties/good.json')}
-              autoPlay
-              loop
-              style={{width: 48, height: 48}}
-            />
-            <Text style={styles.feeling}>good</Text>
-          </Pressable>
-        )}
+        {emotions.map(emotionIndex => {
+          if (emotion.feeling === emotionIndex.feeling) {
+            return (
+              <Animated.View
+                key={emotionIndex.feeling}
+                sharedTransitionStyle={customTransition}
+                sharedTransitionTag="hi"
+                style={styles.lottieBox}>
+                <LottieView
+                  source={emotionIndex.selected}
+                  autoPlay
+                  loop
+                  style={{width: 48, height: 48}}
+                />
+                <Text style={styles[emotion.feeling as keyof typeof styles]}>
+                  {emotionIndex.feeling}
+                </Text>
+              </Animated.View>
+            );
+          } else {
+            return (
+              <Pressable
+                key={emotionIndex.feeling}
+                onPress={() =>
+                  dispatch(feelingType(emotionIndex.feeling) as any)
+                }
+                style={styles.lottieBox}>
+                <LottieView
+                  source={emotionIndex.notSelected}
+                  autoPlay
+                  loop
+                  style={{width: 48, height: 48}}
+                />
+                <Text style={styles.feeling}>{emotionIndex.feeling}</Text>
+              </Pressable>
+            );
+          }
+        })}
       </View>
       {emotion.feeling !== '' && (
         <Pressable
@@ -214,6 +123,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   feeling: {
+    fontFamily: 'Mulish-Regular',
+    fontSize: 12,
+    color: 'white',
+    marginTop: 8,
+  },
+  neutral: {
     fontFamily: 'Mulish-Regular',
     fontSize: 12,
     color: 'white',
