@@ -1,5 +1,5 @@
 import LottieView from 'lottie-react-native';
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 import {
   Image,
   Pressable,
@@ -9,9 +9,11 @@ import {
   View,
 } from 'react-native';
 import Animated, {SharedTransition, withSpring} from 'react-native-reanimated';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Descriptions from '../../components/Descriptions';
 import {feelingEmotions} from '../../constants/feelingEmotions';
+import {descriptors} from '../../store/emotionSlice';
+import {Dispatch} from '@reduxjs/toolkit';
 
 const DescribeSelector: FC = () => {
   const customTransition: SharedTransition = SharedTransition.custom(values => {
@@ -21,6 +23,14 @@ const DescribeSelector: FC = () => {
       originY: withSpring(values.targetOriginY),
     };
   });
+
+  const dispatch: Dispatch<any> = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(descriptors([]));
+    };
+  }, []);
 
   const emotions: any = {
     down: require('../../assets/lotties/down-selected-new.json'),
