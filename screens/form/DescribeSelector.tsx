@@ -14,8 +14,9 @@ import Descriptions from '../../components/Descriptions';
 import {feelingEmotions} from '../../constants/feelingEmotions';
 import {descriptors} from '../../store/emotionSlice';
 import {Dispatch} from '@reduxjs/toolkit';
+import {emotionDescription} from '../../constants/emotionDescriptions';
 
-const DescribeSelector: FC = () => {
+const DescribeSelector: FC = ({navigation}: any) => {
   const customTransition: SharedTransition = SharedTransition.custom(values => {
     'worklet';
     return {
@@ -73,6 +74,27 @@ const DescribeSelector: FC = () => {
           return <Descriptions key={i} feeling={feeling} />;
         })}
       </View>
+      {emotion.describing.length > 0 && (
+        <View style={styles.descriptionsExplanationContainer}>
+          {emotion.describing.map((item: string, index: number) => {
+            return (
+              <View key={index}>
+                <Text style={styles[`${emotion.feeling}Text`]}>{item}</Text>
+                <Text style={styles.explanation}>
+                  {emotionDescription[item]}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
+      {emotion.describing.length > 0 && (
+        <Pressable
+          onPress={() => navigation.navigate('Reason')}
+          style={styles.next}>
+          <Text style={styles.nextText}>next</Text>
+        </Pressable>
+      )}
     </ScrollView>
   );
 };
@@ -156,6 +178,61 @@ const styles: any = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  descriptionsExplanationContainer: {
+    backgroundColor: '#1F1F1F',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 14,
+    marginBottom: 32,
+  },
+  downText: {
+    color: '#DF4545',
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 14,
+  },
+  lowText: {
+    color: '#6E8BD7',
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 14,
+  },
+  neutralText: {
+    color: 'white',
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 14,
+  },
+  fineText: {
+    color: '#8EF09E',
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 14,
+  },
+  goodText: {
+    color: '#4BE95A',
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 14,
+  },
+  explanation: {
+    fontSize: 12,
+    fontFamily: 'Mulish-Regular',
+    color: 'white',
+  },
+  next: {
+    width: '100%',
+    backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 44,
+    borderRadius: 10,
+    marginBottom: 54,
+  },
+  nextText: {
+    fontFamily: 'Mulish-Bold',
+    color: '#000C18',
+    fontSize: 16,
   },
 });
 

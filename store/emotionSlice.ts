@@ -4,6 +4,7 @@ type Emotion = {
   emotion: {
     feeling: string;
     describing: string[];
+    reason: string;
   };
 };
 
@@ -11,6 +12,7 @@ const initialState: Emotion = {
   emotion: {
     feeling: '',
     describing: [],
+    reason: '',
   },
 };
 
@@ -24,8 +26,11 @@ const emotionSlice: Slice = createSlice({
     descriptors: (state, action) => {
       state.emotion = {...state.emotion, describing: action.payload};
     },
+    reason: (state, action) => {
+      state.emotion = {...state.emotion, reason: action.payload};
+    },
   },
 });
 
 export default emotionSlice.reducer;
-export const {feelingType, descriptors} = emotionSlice.actions;
+export const {feelingType, descriptors, reason} = emotionSlice.actions;

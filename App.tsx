@@ -10,6 +10,7 @@ import {EmotionSelector} from './screens/form/EmotionSelector';
 import {Provider} from 'react-redux';
 import store from './store/store';
 import DescribeSelector from './screens/form/DescribeSelector';
+import Reason from './screens/form/Reason';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -64,6 +65,7 @@ const App: FC = () => {
           <Stack.Screen name="HomeTabs" component={HomeTabs} />
           <Stack.Screen name="EmotionSelector" component={EmotionSelector} />
           <Stack.Screen name="DescribeSelector" component={DescribeSelector} />
+          <Stack.Screen name="Reason" component={Reason} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

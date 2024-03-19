@@ -1,9 +1,13 @@
-import {Pressable, StyleSheet, Text} from 'react-native';
+import {Pressable, StyleSheet, Text, ViewStyle} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {descriptors} from '../store/emotionSlice';
 import {Dispatch} from '@reduxjs/toolkit';
 
-const Descriptions: React.FC = ({feeling}: any) => {
+interface DescriptionsProps {
+  feeling: string;
+}
+
+const Descriptions: React.FC<DescriptionsProps> = ({feeling}) => {
   const emotion: any = useSelector((state: any) => state.emotion.emotion);
   const dispatch: Dispatch<any> = useDispatch();
 
@@ -26,8 +30,10 @@ const Descriptions: React.FC = ({feeling}: any) => {
       onPress={selectDescription}
       style={
         emotion.describing.includes(feeling)
-          ? styles[`${emotion.feeling}Selected` as keyof typeof styles]
-          : styles[emotion.feeling as keyof typeof styles]
+          ? (styles[
+              `${emotion.feeling}Selected` as keyof typeof styles
+            ] as ViewStyle)
+          : (styles[emotion.feeling as keyof typeof styles] as ViewStyle)
       }>
       <Text
         style={
