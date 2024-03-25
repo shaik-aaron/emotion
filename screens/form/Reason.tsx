@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -13,6 +13,12 @@ import {reason} from '../../store/emotionSlice';
 const Reason: FC = ({navigation}: any) => {
   const emotion = useSelector((state: any) => state.emotion.emotion);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(reason('') as any);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -36,7 +42,7 @@ const Reason: FC = ({navigation}: any) => {
       />
       {emotion.reason.length > 0 && (
         <Pressable
-          onPress={() => navigation.navigate('DescribeSelector')}
+          onPress={() => navigation.navigate('ActivitySelector')}
           style={styles.next}>
           <Text style={styles.nextText}>next</Text>
         </Pressable>
