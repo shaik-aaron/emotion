@@ -9,14 +9,21 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
+  Dimensions,
 } from 'react-native';
 import {activities} from '../../constants/activities';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {saveActivities} from '../../store/emotionSlice';
 
 const ActivitySelector: FC = ({navigation}: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [newActivtiy, setNewActivity] = useState<string>('');
   const [allActivities, setAllActivities] = useState<string[]>(activities);
+  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+
+  const emotion = useSelector((state: any) => state.emotion.emotion);
+  const dispatch = useDispatch();
 
   const saveActivity = async () => {
     try {
@@ -49,14 +56,33 @@ const ActivitySelector: FC = ({navigation}: any) => {
       const data: any = await AsyncStorage.getItem('user-set-activities');
       if (data) {
         let temp = JSON.parse(data);
-        setAllActivities(prev => [...prev, ...temp]);
+        setAllActivities(activities => [...activities, ...temp]);
       }
     }
     fetchData();
+
+    return () => {
+      dispatch(saveActivities([]) as any);
+    };
   }, []);
 
+  function selectActivity(activity: string) {
+    if (selectedActivities.includes(activity)) {
+      let temp = selectedActivities.slice();
+      let filtered = temp.filter((element: string) => element !== activity);
+      setSelectedActivities(filtered);
+    } else {
+      setSelectedActivities(prev => [...prev, activity]);
+    }
+  }
+
+  function saveData() {
+    dispatch(saveActivities(selectedActivities) as any);
+    navigation.navigate('Final');
+  }
+
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
       <Modal visible={modalOpen} animationType={'slide'}>
         <View style={styles.container}>
           <View style={styles.backButtonsContainer}>
@@ -67,7 +93,7 @@ const ActivitySelector: FC = ({navigation}: any) => {
           </View>
           <TextInput
             onChangeText={text => setNewActivity(text)}
-            placeholder="it will be saved next time"
+            placeholder="it will be saved next time you log back in!"
             placeholderTextColor={'#585858'}
             style={styles.textInput}
             cursorColor={'white'}
@@ -79,7 +105,7 @@ const ActivitySelector: FC = ({navigation}: any) => {
           )}
         </View>
       </Modal>
-      <View style={styles.container}>
+      <View>
         <View style={styles.backButtonsContainer}>
           <Pressable>
             <Image source={require('../../assets/back.png')} />
@@ -95,8 +121,22 @@ const ActivitySelector: FC = ({navigation}: any) => {
         <View style={styles.activitiesContainer}>
           {allActivities.map((activity, index) => {
             return (
-              <Pressable key={index} style={styles.activity}>
-                <Text style={styles.activityText}>{activity}</Text>
+              <Pressable
+                onPress={() => selectActivity(activity)}
+                key={index}
+                style={
+                  selectedActivities.includes(activity)
+                    ? styles.selectedActivity
+                    : styles.activity
+                }>
+                <Text
+                  style={
+                    selectedActivities.includes(activity)
+                      ? styles.selectedActivityText
+                      : styles.activityText
+                  }>
+                  {activity}
+                </Text>
               </Pressable>
             );
           })}
@@ -106,11 +146,11 @@ const ActivitySelector: FC = ({navigation}: any) => {
             <Text style={styles.activityText}>+</Text>
           </Pressable>
         </View>
-        <Pressable
-          onPress={() => navigation.navigate('ActivitySelector')}
-          style={styles.next}>
-          <Text style={styles.nextText}>next</Text>
-        </Pressable>
+        {selectedActivities.length > 0 && (
+          <Pressable onPress={() => saveData()} style={styles.next}>
+            <Text style={styles.nextText}>next</Text>
+          </Pressable>
+        )}
       </View>
     </ScrollView>
   );
@@ -164,10 +204,24 @@ const styles = StyleSheet.create({
     width: 140,
     paddingVertical: 14,
   },
+  selectedActivity: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 1000,
+    width: 140,
+    paddingVertical: 14,
+  },
   activityText: {
     fontFamily: 'Mulish-SemiBold',
     fontSize: 16,
     color: 'white',
+  },
+  selectedActivityText: {
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 16,
+    color: 'black',
   },
   next: {
     width: '100%',

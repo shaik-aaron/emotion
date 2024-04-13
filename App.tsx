@@ -12,6 +12,7 @@ import store from './store/store';
 import DescribeSelector from './screens/form/DescribeSelector';
 import Reason from './screens/form/Reason';
 import ActivitySelector from './screens/form/ActivitySelector';
+import Final from './screens/form/Final';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -68,6 +69,7 @@ const App: FC = () => {
           <Stack.Screen name="DescribeSelector" component={DescribeSelector} />
           <Stack.Screen name="Reason" component={Reason} />
           <Stack.Screen name="ActivitySelector" component={ActivitySelector} />
+          <Stack.Screen name="Final" component={Final} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

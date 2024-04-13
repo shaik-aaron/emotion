@@ -1,10 +1,12 @@
 import {Slice, createSlice} from '@reduxjs/toolkit';
+import {activities} from '../constants/activities';
 
 type Emotion = {
   emotion: {
     feeling: string;
     describing: string[];
     reason: string;
+    activities: string[];
   };
 };
 
@@ -13,6 +15,7 @@ const initialState: Emotion = {
     feeling: '',
     describing: [],
     reason: '',
+    activities: [],
   },
 };
 
@@ -29,8 +32,12 @@ const emotionSlice: Slice = createSlice({
     reason: (state, action) => {
       state.emotion = {...state.emotion, reason: action.payload};
     },
+    saveActivities: (state, action) => {
+      state.emotion = {...state.emotion, activities: action.payload};
+    },
   },
 });
 
 export default emotionSlice.reducer;
-export const {feelingType, descriptors, reason} = emotionSlice.actions;
+export const {feelingType, descriptors, reason, saveActivities} =
+  emotionSlice.actions;
