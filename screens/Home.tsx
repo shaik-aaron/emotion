@@ -1,17 +1,31 @@
-import {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import Emotion from '../components/Emotion';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Home: FC = ({navigation}: any) => {
   const [time, setTime] = useState<Date>(new Date());
+  const [emotions, setEmotions] = useState([]);
 
-  useEffect(() => {
-    const timer: NodeJS.Timeout = setInterval(() => {
-      setTime(new Date());
-    }, 1000 * 60 * 60);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  async function fetchEmotions() {
+    let emotions: any = await AsyncStorage.getItem('user_emotion_summaries');
+    setEmotions(JSON.parse(emotions));
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const timer: NodeJS.Timeout = setInterval(() => {
+        setTime(new Date());
+      }, 1000 * 60 * 60);
+
+      fetchEmotions();
+
+      return () => {
+        clearInterval(timer);
+      };
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
@@ -42,24 +56,13 @@ const Home: FC = ({navigation}: any) => {
           <Text style={styles.yourEmotions}>your emotions</Text>
           <View style={styles.divider} />
         </View>
-        <View style={styles.emotionsContainer}>
-          <View style={styles.emotionContainer}>
-            <View style={styles.inlineEmotion}>
-              <Text style={styles.emotion}>I'm feeling</Text>
-              <Text style={styles.emotionItalic}>happy and curious</Text>
-            </View>
-            <View style={styles.tagsContainer}>
-              <View style={styles.tag}>
-                <Text style={styles.tagEmotion}>work</Text>
-              </View>
-              <View style={styles.tag}>
-                <Text style={styles.tagEmotion}>travel</Text>
-              </View>
-            </View>
-            <Text style={styles.dateStamp}>wed 23 aug, 11:18 pm</Text>
-            <View style={styles.borderBottom} />
-          </View>
-        </View>
+        {emotions ? (
+          emotions.map((emotion: any, index: number) => {
+            return <Emotion emotion={emotion} key={index} />;
+          })
+        ) : (
+          <Text style={styles.emotion}>add an emotion to see it here!</Text>
+        )}
       </ScrollView>
     </View>
   );
@@ -145,61 +148,12 @@ const styles = StyleSheet.create({
     color: '#585858',
     fontSize: 16,
   },
-  emotionsContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  emotionContainer: {
-    paddingTop: 24,
-  },
-  inlineEmotion: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 6,
-    marginBottom: 12,
-  },
   emotion: {
     fontFamily: 'Mulish-Bold',
     fontSize: 18,
     color: 'white',
-  },
-  emotionItalic: {
-    fontFamily: 'Mulish-BoldItalic',
-    fontSize: 18,
-    color: 'white',
-  },
-  tagsContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 20,
-  },
-  tag: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 68,
-    borderColor: 'white',
-    borderWidth: 1,
-  },
-  tagEmotion: {
-    fontFamily: 'Mulish-Regular',
-    fontSize: 14,
-    color: 'white',
-  },
-  dateStamp: {
-    fontFamily: 'Mulish-Regular',
-    fontSize: 14,
-    color: 'white',
-    lineHeight: 21,
-    marginBottom: 20,
-  },
-  borderBottom: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#393939',
+    textAlign: 'center',
+    marginBottom: 24,
   },
 });
 

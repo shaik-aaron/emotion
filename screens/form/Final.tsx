@@ -1,54 +1,122 @@
-import {FC} from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import dayjs from 'dayjs';
+import {FC, useState} from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  descriptors,
+  feelingType,
+  reason,
+  saveActivities,
+} from '../../store/emotionSlice';
 
 const Final: FC = ({navigation}: any) => {
   const emotion = useSelector((state: any) => state.emotion.emotion);
+  const presentDateAndTime = dayjs().format('ddd DD MMM,h:mm A').toLowerCase();
+  const dispatch = useDispatch();
   console.log(emotion);
+  const [saving, setSaving] = useState<boolean>(false);
+
+  async function saveSummary() {
+    const user_emotion_summaries = await AsyncStorage.getItem(
+      'user_emotion_summaries',
+    );
+    if (user_emotion_summaries === null) {
+      setSaving(true);
+      let temp = [
+        {
+          ...emotion,
+          date: dayjs(),
+        },
+      ];
+      let emotionSummary = JSON.stringify(temp);
+      await AsyncStorage.setItem('user_emotion_summaries', emotionSummary);
+      setSaving(false);
+      navigation.navigate('Home');
+    } else {
+      setSaving(true);
+      let temp = JSON.parse(user_emotion_summaries);
+      temp.push({
+        ...emotion,
+        date: dayjs(),
+      });
+      let emotionSummary = JSON.stringify(temp);
+      await AsyncStorage.setItem('user_emotion_summaries', emotionSummary);
+      setSaving(false);
+      navigation.navigate('Home');
+    }
+  }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.backButtonsContainer}>
-        <Pressable>
-          <Image source={require('../../assets/close.png')} />
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.backButtonsContainer}>
+          <Pressable>
+            <Image source={require('../../assets/close.png')} />
+          </Pressable>
+        </View>
+        <Text style={styles.done}>done!</Text>
+        <View style={{marginBottom: 64}}>
+          <Text style={styles.added}>you have added your emotion</Text>
+          <Text style={styles.added}>check-in!</Text>
+        </View>
+        <View style={styles.yourEmotionsContainer}>
+          <View style={styles.divider} />
+          <Text style={styles.yourEmotions}>your summary</Text>
+          <View style={styles.divider} />
+        </View>
+        <View style={styles.mainEmotionContainer}>
+          <Text style={styles.yourefeeling}>you're feeling</Text>
+          <Text style={styles[`${emotion.feeling}` as keyof typeof styles]}>
+            {emotion.describing.map((item: string, index: number) => {
+              if (emotion.describing.length === 1) {
+                return item;
+              } else if (emotion.describing.length === 2) {
+                if (index === 0) {
+                  return item + ' and ';
+                } else {
+                  return item;
+                }
+              } else if (emotion.describing.length > 2) {
+                if (index === emotion.describing.length - 2) {
+                  return item + ' and ';
+                } else if (index === emotion.describing.length - 1) {
+                  return item;
+                } else {
+                  return item + ', ';
+                }
+              }
+            })}
+          </Text>
+          <Text style={styles.reasonText}>{emotion.reason}</Text>
+          <View style={styles.tagsContainer}>
+            {emotion.activities.map((item: string, index: number) => {
+              return (
+                <View key={index} style={styles.tag}>
+                  <Text style={styles.tagText}>{item}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+        <Text style={styles.time}>{presentDateAndTime}</Text>
+        <Pressable onPress={() => saveSummary()} style={styles.next}>
+          {saving ? (
+            <ActivityIndicator color={'black'} />
+          ) : (
+            <Text style={styles.nextText}>save</Text>
+          )}
         </Pressable>
       </View>
-      <Text style={styles.done}>done!</Text>
-      <View style={{marginBottom: 64}}>
-        <Text style={styles.added}>you have added your emotion</Text>
-        <Text style={styles.added}>check-in!</Text>
-      </View>
-      <View style={styles.yourEmotionsContainer}>
-        <View style={styles.divider} />
-        <Text style={styles.yourEmotions}>your summary</Text>
-        <View style={styles.divider} />
-      </View>
-      <View style={styles.mainEmotionContainer}>
-        <Text style={styles.yourefeeling}>you're feeling</Text>
-        <Text style={styles[`${emotion.feeling}` as keyof typeof styles]}>
-          {emotion.describing.map((item: string, index: number) => {
-            if (emotion.describing.length === 1) {
-              return item;
-            } else if (emotion.describing.length === 2) {
-              if (index === 0) {
-                return item + ' and ';
-              } else {
-                return item;
-              }
-            } else if (emotion.describing.length > 2) {
-              if (index === emotion.describing.length - 2) {
-                return item + ' and ';
-              } else if (index === emotion.describing.length - 1) {
-                return item;
-              } else {
-                return item + ', ';
-              }
-            }
-          })}
-        </Text>
-        <Text style={styles.reasonText}>{emotion.reason}</Text>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -101,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   mainEmotionContainer: {
-    paddingHorizontal: 70,
+    paddingHorizontal: 50,
   },
   yourefeeling: {
     fontFamily: 'Mulish-ExtraBold',
@@ -155,5 +223,53 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#FFFFFF',
     marginBottom: 16,
+  },
+  tagsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 12,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  tag: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'white',
+    borderRadius: 68,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 56,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  tagText: {
+    fontFamily: 'Mulish-Regular',
+    fontSize: 14,
+    color: 'white',
+  },
+  time: {
+    color: '#585858',
+    fontFamily: 'Mulish-SemiBold',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 86,
+  },
+  next: {
+    width: '100%',
+    backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 44,
+    borderRadius: 10,
+    marginBottom: 48,
+  },
+  nextText: {
+    fontFamily: 'Mulish-Bold',
+    color: '#000C18',
+    fontSize: 16,
   },
 });

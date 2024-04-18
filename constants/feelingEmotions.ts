@@ -23,7 +23,7 @@ export const feelingEmotions: any = {
     'withdrawn',
     'tense',
     'anxious',
-    'isloated',
+    'isolated',
   ],
   neutral: [
     'bored',
