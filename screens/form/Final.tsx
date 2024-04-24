@@ -10,18 +10,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  descriptors,
-  feelingType,
-  reason,
-  saveActivities,
-} from '../../store/emotionSlice';
+import {useSelector} from 'react-redux';
 
 const Final: FC = ({navigation}: any) => {
   const emotion = useSelector((state: any) => state.emotion.emotion);
   const presentDateAndTime = dayjs().format('ddd DD MMM,h:mm A').toLowerCase();
-  const dispatch = useDispatch();
   console.log(emotion);
   const [saving, setSaving] = useState<boolean>(false);
 

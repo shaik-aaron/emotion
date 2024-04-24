@@ -5,7 +5,6 @@ import {FC} from 'react';
 import Home from './screens/Home';
 import {Image} from 'react-native';
 import Reports from './screens/Reports';
-import Profile from './screens/Profile';
 import {EmotionSelector} from './screens/form/EmotionSelector';
 import {Provider} from 'react-redux';
 import store from './store/store';
@@ -41,6 +40,7 @@ const HomeTabs: FC = () => {
         tabBarStyle: {
           backgroundColor: '#121212',
           paddingBottom: 24,
+          paddingTop: 8,
           height: 70,
           borderTopColor: '#121212',
         },
@@ -53,7 +53,6 @@ const HomeTabs: FC = () => {
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Reports" component={Reports} />
-      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };
