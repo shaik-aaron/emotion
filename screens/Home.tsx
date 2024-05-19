@@ -58,7 +58,13 @@ const Home: FC = ({navigation}: any) => {
         </View>
         {emotions ? (
           emotions.map((emotion: any, index: number) => {
-            return <Emotion emotion={emotion} key={index} />;
+            return (
+              <Pressable
+                onPress={() => navigation.navigate('Summary', {data: emotion})}
+                key={index}>
+                <Emotion emotion={emotion} />
+              </Pressable>
+            );
           })
         ) : (
           <Text style={styles.emotion}>add an emotion to see it here!</Text>

@@ -12,6 +12,8 @@ import DescribeSelector from './screens/form/DescribeSelector';
 import Reason from './screens/form/Reason';
 import ActivitySelector from './screens/form/ActivitySelector';
 import Final from './screens/form/Final';
+import WeeklyReport from './screens/WeeklyReport';
+import Summary from './screens/Summary';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -69,6 +71,8 @@ const App: FC = () => {
           <Stack.Screen name="Reason" component={Reason} />
           <Stack.Screen name="ActivitySelector" component={ActivitySelector} />
           <Stack.Screen name="Final" component={Final} />
+          <Stack.Screen name="Weekly Reports" component={WeeklyReport} />
+          <Stack.Screen name="Summary" component={Summary} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 6,
     marginBottom: 12,
+    flexWrap: 'wrap',
   },
   emotion: {
     fontFamily: 'Mulish-Bold',

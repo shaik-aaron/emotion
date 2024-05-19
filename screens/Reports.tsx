@@ -1,15 +1,69 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFocusEffect} from '@react-navigation/native';
 import dayjs from 'dayjs';
-import {FC} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {FC, useCallback, useState} from 'react';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import groupByMonth from '../functions/groupByMonth';
 
-const Reports: FC = () => {
+const Reports: FC = ({navigation}: any) => {
+  const [emotions, setEmotions] = useState(new Map());
+
+  async function fetchEmotions() {
+    const unparsedEmotions: any = await AsyncStorage.getItem(
+      'user_emotion_summaries',
+    );
+    const sortedEmotions = groupByMonth(JSON.parse(unparsedEmotions));
+    setEmotions(sortedEmotions);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchEmotions();
+    }, []),
+  );
+
+  console.log(Array.from(emotions.entries()));
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.weeklyReports}>your weekly reports</Text>
-      <Text style={styles.hereYouCanView}>
-        here you can view all your logged in emotions filtered weekly
-      </Text>
-    </View>
+    <ScrollView style={{flex: 1, backgroundColor: '#121212'}}>
+      <View style={styles.container}>
+        <Text style={styles.weeklyReports}>your weekly reports</Text>
+        <Text style={styles.hereYouCanView}>
+          here you can view all your logged in emotions filtered weekly
+        </Text>
+        {Array.from(emotions.entries()).map(([key, value]: any) => {
+          const [month, year] = key.split(' ');
+          return (
+            <View style={{marginBottom: 48}}>
+              <Text style={styles.monthAndYear}>
+                {month.toLowerCase() + ' ' + year}
+              </Text>
+              {Array.from(value.entries()).map(([key, value]: any) => {
+                return (
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate('Weekly Reports', {data: value})
+                    }
+                    style={styles.weeklyContainer}>
+                    <Text style={styles.weekText}>
+                      {key + ' ' + month.toLowerCase()}
+                    </Text>
+                    <Image source={require('../assets/arrow-left.png')} />
+                  </Pressable>
+                );
+              })}
+            </View>
+          );
+        })}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -32,5 +86,34 @@ const styles = StyleSheet.create({
     fontFamily: 'Mulish-Regular',
     color: '#585858',
     fontSize: 14,
+    marginBottom: 64,
+  },
+  monthAndYear: {
+    fontFamily: 'Mulish-SemiBold',
+    color: '#ADADAD',
+    fontSize: 16,
+    marginBottom: 14,
+  },
+  weeklyContainer: {
+    backgroundColor: '#1F1F1F',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 70,
+    marginBottom: 12,
+  },
+  week: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  weekText: {
+    color: 'white',
+    fontFamily: 'Mulish-ExtraBold',
+    fontSize: 18,
   },
 });

@@ -1,68 +1,16 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
-import {FC, useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import {useSelector} from 'react-redux';
+import {FC} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
-const Final: FC = ({navigation}: any) => {
-  const emotion = useSelector((state: any) => state.emotion.emotion);
-  const presentDateAndTime = dayjs().format('ddd DD MMM, h:mm A').toLowerCase();
-  console.log(emotion);
-  const [saving, setSaving] = useState<boolean>(false);
-
-  async function saveSummary() {
-    const user_emotion_summaries = await AsyncStorage.getItem(
-      'user_emotion_summaries',
-    );
-    if (user_emotion_summaries === null) {
-      setSaving(true);
-      let temp = [
-        {
-          ...emotion,
-          date: dayjs(),
-        },
-      ];
-      let emotionSummary = JSON.stringify(temp);
-      console.log(emotionSummary);
-      await AsyncStorage.setItem('user_emotion_summaries', emotionSummary);
-      setSaving(false);
-      navigation.navigate('Home');
-    } else {
-      setSaving(true);
-      let temp = JSON.parse(user_emotion_summaries);
-      temp.unshift({
-        ...emotion,
-        date: dayjs(),
-      });
-      let emotionSummary = JSON.stringify(temp);
-      console.log(emotionSummary);
-      await AsyncStorage.setItem('user_emotion_summaries', emotionSummary);
-      setSaving(false);
-      navigation.navigate('Home');
-    }
-  }
+const Summary: FC = () => {
+  const route = useRoute();
+  const {data: emotion}: any = route.params;
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.backButtonsContainer}>
-          <Pressable>
-            <Image source={require('../../assets/close.png')} />
-          </Pressable>
-        </View>
-        <Text style={styles.done}>done!</Text>
-        <View style={{marginBottom: 64}}>
-          <Text style={styles.added}>you have added your emotion</Text>
-          <Text style={styles.added}>check-in!</Text>
-        </View>
+    <View style={styles.container}>
+      <Image source={require('../assets/back.png')} style={styles.back} />
+      <View>
         <View style={styles.yourEmotionsContainer}>
           <View style={styles.divider} />
           <Text style={styles.yourEmotions}>your summary</Text>
@@ -102,47 +50,28 @@ const Final: FC = ({navigation}: any) => {
             })}
           </View>
         </View>
-        <Text style={styles.time}>{presentDateAndTime}</Text>
-        <Pressable onPress={() => saveSummary()} style={styles.next}>
-          {saving ? (
-            <ActivityIndicator color={'black'} />
-          ) : (
-            <Text style={styles.nextText}>save</Text>
-          )}
-        </Pressable>
+        <Text style={styles.time}>
+          {dayjs(emotion.date).format('ddd DD MMM, h:mm A').toLowerCase()}
+        </Text>
       </View>
-    </ScrollView>
+    </View>
   );
 };
-
-export default Final;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-    paddingHorizontal: 20,
-  },
-  backButtonsContainer: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 64,
-    marginBottom: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  done: {
-    fontFamily: 'Mulish-ExtraBold',
-    fontSize: 32,
-    color: 'white',
-    textAlign: 'center',
-    marginTop: 56,
-    marginBottom: 20,
-  },
-  added: {
-    fontFamily: 'Mulish-Regular',
-    textAlign: 'center',
-    color: '#585858',
-    fontSize: 16,
+  back: {
+    position: 'absolute',
+    top: 64,
+    left: 20,
   },
   yourEmotionsContainer: {
     width: '100%',
@@ -252,19 +181,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 86,
   },
-  next: {
-    width: '100%',
-    backgroundColor: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 44,
-    borderRadius: 10,
-    marginBottom: 48,
-  },
-  nextText: {
-    fontFamily: 'Mulish-Bold',
-    color: '#000C18',
-    fontSize: 16,
-  },
 });
+
+export default Summary;
