@@ -27,10 +27,10 @@ export const EmotionSelector: FC = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.backButtonsContainer}>
-        <Pressable>
+        <Pressable onPress={() => navigation.goBack()}>
           <Image source={require('../../assets/back.png')} />
         </Pressable>
-        <Pressable>
+        <Pressable onPress={() => navigation.navigate('Home')}>
           <Image source={require('../../assets/close.png')} />
         </Pressable>
       </View>

@@ -14,6 +14,7 @@ import groupByMonth from '../functions/groupByMonth';
 
 const Reports: FC = ({navigation}: any) => {
   const [emotions, setEmotions] = useState(new Map());
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   async function fetchEmotions() {
     const unparsedEmotions: any = await AsyncStorage.getItem(
@@ -26,6 +27,7 @@ const Reports: FC = ({navigation}: any) => {
   useFocusEffect(
     useCallback(() => {
       fetchEmotions();
+      setIsLoading(false);
     }, []),
   );
 
@@ -38,30 +40,39 @@ const Reports: FC = ({navigation}: any) => {
         <Text style={styles.hereYouCanView}>
           here you can view all your logged in emotions filtered weekly
         </Text>
-        {Array.from(emotions.entries()).map(([key, value]: any) => {
-          const [month, year] = key.split(' ');
-          return (
-            <View style={{marginBottom: 48}}>
-              <Text style={styles.monthAndYear}>
-                {month.toLowerCase() + ' ' + year}
-              </Text>
-              {Array.from(value.entries()).map(([key, value]: any) => {
-                return (
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate('Weekly Reports', {data: value})
-                    }
-                    style={styles.weeklyContainer}>
-                    <Text style={styles.weekText}>
-                      {key + ' ' + month.toLowerCase()}
-                    </Text>
-                    <Image source={require('../assets/arrow-left.png')} />
-                  </Pressable>
-                );
-              })}
-            </View>
-          );
-        })}
+        {isLoading ? (
+          <Text style={styles.weeklyReports}>Loading...</Text>
+        ) : (
+          Array.from(emotions.entries()).map(
+            ([key, value]: any, index: number) => {
+              const [month, year] = key.split(' ');
+              return (
+                <View key={index} style={{marginBottom: 48}}>
+                  <Text style={styles.monthAndYear}>
+                    {month.toLowerCase() + ' ' + year}
+                  </Text>
+                  {Array.from(value.entries()).map(
+                    ([key, value]: any, index: number) => {
+                      return (
+                        <Pressable
+                          key={index}
+                          onPress={() =>
+                            navigation.navigate('Weekly Reports', {data: value})
+                          }
+                          style={styles.weeklyContainer}>
+                          <Text style={styles.weekText}>
+                            {key + ' ' + month.toLowerCase()}
+                          </Text>
+                          <Image source={require('../assets/arrow-left.png')} />
+                        </Pressable>
+                      );
+                    },
+                  )}
+                </View>
+              );
+            },
+          )
+        )}
       </View>
     </ScrollView>
   );

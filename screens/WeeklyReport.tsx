@@ -1,6 +1,13 @@
 import {useRoute} from '@react-navigation/native';
 import {FC} from 'react';
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Emotion from '../components/Emotion';
 
 const WeeklyReport: FC = ({navigation}: any) => {
@@ -10,13 +17,17 @@ const WeeklyReport: FC = ({navigation}: any) => {
   return (
     <ScrollView style={{flex: 1, backgroundColor: '#121212'}}>
       <View style={styles.container}>
+        <Pressable onPress={() => navigation.goBack()} style={styles.back}>
+          <Image source={require('../assets/back.png')} />
+        </Pressable>
         <Text style={styles.weeklyReports}>your weekly reports</Text>
         <Text style={styles.hereYouCanView}>
           here you can view all your logged in emotions filtered weekly
         </Text>
-        {data.map((emotion: any) => {
+        {data.map((emotion: any, index: number) => {
           return (
             <Pressable
+              key={index}
               onPress={() => navigation.navigate('Summary', {data: emotion})}>
               <Emotion emotion={emotion} />
             </Pressable>
@@ -33,6 +44,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
+    position: 'relative',
+  },
+  back: {
+    position: 'absolute',
+    top: 64,
+    left: 20,
   },
   weeklyReports: {
     color: 'white',

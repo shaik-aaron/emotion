@@ -107,10 +107,10 @@ const ActivitySelector: FC = ({navigation}: any) => {
       </Modal>
       <View>
         <View style={styles.backButtonsContainer}>
-          <Pressable>
+          <Pressable onPress={() => navigation.goBack()}>
             <Image source={require('../../assets/back.png')} />
           </Pressable>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Home')}>
             <Image source={require('../../assets/close.png')} />
           </Pressable>
         </View>

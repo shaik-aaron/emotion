@@ -6,6 +6,7 @@ import {useFocusEffect} from '@react-navigation/native';
 
 const Home: FC = ({navigation}: any) => {
   const [time, setTime] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emotions, setEmotions] = useState([]);
 
   async function fetchEmotions() {
@@ -20,6 +21,7 @@ const Home: FC = ({navigation}: any) => {
       }, 1000 * 60 * 60);
 
       fetchEmotions();
+      setIsLoading(false);
 
       return () => {
         clearInterval(timer);
@@ -56,7 +58,9 @@ const Home: FC = ({navigation}: any) => {
           <Text style={styles.yourEmotions}>your emotions</Text>
           <View style={styles.divider} />
         </View>
-        {emotions ? (
+        {isLoading ? (
+          <Text style={styles.emotion}>Loading...</Text>
+        ) : emotions ? (
           emotions.map((emotion: any, index: number) => {
             return (
               <Pressable

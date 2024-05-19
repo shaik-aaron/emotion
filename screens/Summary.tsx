@@ -1,15 +1,17 @@
 import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {FC} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 
-const Summary: FC = () => {
+const Summary: FC = ({navigation}: any) => {
   const route = useRoute();
   const {data: emotion}: any = route.params;
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/back.png')} style={styles.back} />
+      <Pressable onPress={() => navigation.goBack()} style={styles.back}>
+        <Image source={require('../assets/back.png')} />
+      </Pressable>
       <View>
         <View style={styles.yourEmotionsContainer}>
           <View style={styles.divider} />

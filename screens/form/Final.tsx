@@ -54,7 +54,7 @@ const Final: FC = ({navigation}: any) => {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.backButtonsContainer}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Home')}>
             <Image source={require('../../assets/close.png')} />
           </Pressable>
         </View>
