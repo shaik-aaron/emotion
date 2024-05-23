@@ -42,7 +42,7 @@ const Reports: FC = ({navigation}: any) => {
         </Text>
         {isLoading ? (
           <Text style={styles.weeklyReports}>Loading...</Text>
-        ) : (
+        ) : Array.from(emotions.entries()).length > 0 ? (
           Array.from(emotions.entries()).map(
             ([key, value]: any, index: number) => {
               const [month, year] = key.split(' ');
@@ -72,6 +72,10 @@ const Reports: FC = ({navigation}: any) => {
               );
             },
           )
+        ) : (
+          <Text style={styles.weeklyReports}>
+            add an emotion to see your reports!
+          </Text>
         )}
       </View>
     </ScrollView>

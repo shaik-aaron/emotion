@@ -1,7 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 import Home from './screens/Home';
 import {Image} from 'react-native';
 import Reports from './screens/Reports';
@@ -14,11 +14,16 @@ import ActivitySelector from './screens/form/ActivitySelector';
 import Final from './screens/form/Final';
 import WeeklyReport from './screens/WeeklyReport';
 import Summary from './screens/Summary';
+import SplashScreen from 'react-native-splash-screen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const HomeTabs: FC = () => {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
