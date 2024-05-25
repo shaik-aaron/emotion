@@ -31,18 +31,18 @@ const ActivitySelector: FC = ({navigation}: any) => {
         'user-set-activities',
       );
       if (user_set_activities === null) {
-        let temp = [newActivtiy];
+        let temp = [newActivtiy.toLowerCase()];
         let temp_data = JSON.stringify(temp);
         await AsyncStorage.setItem('user-set-activities', temp_data);
-        setAllActivities(prev => [...prev, newActivtiy]);
+        setAllActivities(prev => [...prev, newActivtiy.toLowerCase()]);
         setModalOpen(prev => !prev);
         ToastAndroid.show('Activity Saved', ToastAndroid.SHORT);
       } else {
         let temp = JSON.parse(user_set_activities); // Parse as array
-        temp.push(newActivtiy); // Add new activity to the array
+        temp.push(newActivtiy.toLowerCase()); // Add new activity to the array
         let temp_data = JSON.stringify(temp);
         await AsyncStorage.setItem('user-set-activities', temp_data);
-        setAllActivities(prev => [...prev, newActivtiy]);
+        setAllActivities(prev => [...prev, newActivtiy.toLowerCase()]);
         ToastAndroid.show('Activity Saved', ToastAndroid.SHORT);
         setModalOpen(prev => !prev);
       }

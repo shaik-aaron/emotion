@@ -34,7 +34,7 @@ const Reason: FC = ({navigation}: any) => {
       <Text style={styles.howDoYouFeel}>what's the reason</Text>
       <Text style={styles.howDoYouFeel}>behind these emotions?</Text>
       <TextInput
-        onChangeText={text => dispatch(reason(text) as any)}
+        onChangeText={text => dispatch(reason(text.toLowerCase()) as any)}
         placeholder="write your thoughts here"
         placeholderTextColor={'#585858'}
         style={styles.textInput}

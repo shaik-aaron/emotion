@@ -50,7 +50,6 @@ const Home: FC = ({navigation}: any) => {
               style={styles.checkInButton}>
               <Text style={styles.howDoYouFeel}>how do you feel?</Text>
             </Pressable>
-            <Text style={styles.checkedInAmount}>checked in 3 times today</Text>
           </View>
         </View>
         <View style={styles.yourEmotionsContainer}>

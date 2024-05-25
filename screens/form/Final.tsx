@@ -51,7 +51,7 @@ const Final: FC = ({navigation}: any) => {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{flex: 1, backgroundColor: '#121212'}}>
       <View style={styles.container}>
         <View style={styles.backButtonsContainer}>
           <Pressable onPress={() => navigation.navigate('Home')}>
