@@ -39,6 +39,7 @@ const Reason: FC = ({navigation}: any) => {
         placeholderTextColor={'#585858'}
         style={styles.textInput}
         cursorColor={'white'}
+        autoFocus
       />
       {emotion.reason.length > 0 && (
         <Pressable
